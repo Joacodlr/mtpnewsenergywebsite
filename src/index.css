@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MTP's type and page colours: Source Sans, blue-black copy on near-white. */
+:root {
+  --font-sans: "Source Sans 3", "Source Sans Pro", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f4f5f6;
+  color: #182e3e;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
