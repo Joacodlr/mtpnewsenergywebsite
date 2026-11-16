@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Landing } from "./components/Landing";
 import { Questionnaire } from "./components/Questionnaire";
 import { Results } from "./components/Results";
 import { buildProfile } from "./lib/profile";
 import { rank } from "./lib/recommend";
+import { scrollHostToTop } from "./lib/embed";
 import { expandAnswers } from "./lib/expand";
 import { visibleQuestions, type Answers } from "./lib/questions";
 
@@ -27,6 +28,22 @@ export function App() {
     const questions = visibleQuestions(answers);
     return questions.length > 0 && questions.every((question) => question.id in answers);
   }, [answers]);
+
+  /*
+   * Each question, the results and the cover are separate screens. When one
+   * replaces another inside the host page, bring the app's top into view —
+   * but not on first load, when the reader may still be reading the article
+   * above the embed and has not touched it yet.
+   */
+  const screen = `${started}:${Object.keys(answers).length}:${done}`;
+  const firstScreen = useRef(true);
+  useEffect(() => {
+    if (firstScreen.current) {
+      firstScreen.current = false;
+      return;
+    }
+    scrollHostToTop();
+  }, [screen]);
 
   const answer = (questionId: string, optionId: string) =>
     setAnswers((current) => ({ ...current, [questionId]: optionId }));

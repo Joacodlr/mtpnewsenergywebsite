@@ -109,3 +109,44 @@ Sin `vercel.json`, a propósito: Vercel detecta Vite y usa por defecto
 tiene rutas (es una sola página), así que no necesita reglas de reescritura.
 Una versión anterior llevaba una y Vercel la rechazó como `vercel.json` no
 válido. No necesita variables de entorno.
+
+## 6. Insertar en una página de WordPress
+
+La app se inserta con un iframe y `?embed=1`. En ese modo oculta su propia
+cabecera (la del sitio ya está encima), informa de su altura para que el
+iframe mida exactamente su contenido y, al cambiar de pantalla, pide a la
+página que vuelva a mostrar su parte superior. Ver `src/lib/embed.ts`.
+
+En la página, añade un bloque **HTML personalizado** con esto, cambiando solo
+la URL:
+
+```html
+<iframe
+  id="mtp-energia"
+  src="https://TU-PROYECTO.vercel.app/?embed=1"
+  title="MTP Energía — comparador de tarifas de luz"
+  style="display:block;width:100%;border:0;min-height:900px;scroll-margin-top:90px"
+></iframe>
+<script>
+  (function () {
+    var frame = document.getElementById("mtp-energia");
+    var origin = new URL(frame.src).origin;
+    window.addEventListener("message", function (e) {
+      if (e.origin !== origin || !e.data) return;
+      if (e.data.type === "mtp-energia:height") {
+        frame.style.minHeight = "0";
+        frame.style.height = e.data.height + "px";
+      }
+      if (e.data.type === "mtp-energia:top") {
+        frame.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  })();
+</script>
+```
+
+- `scroll-margin-top` deja sitio para la cabecera fija del sitio al subir.
+  Ajústalo a la altura real de esa cabecera.
+- El script solo acepta mensajes del dominio del propio iframe.
+- Hace falta un usuario con permiso para HTML sin filtrar (administrador en
+  un sitio normal): WordPress elimina `<iframe>` y `<script>` al resto.

@@ -21,3 +21,16 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
+
+/* Embedded in an iframe (see src/lib/embed.ts): the page must be exactly as
+   tall as its content, or the height it reports can only ever grow. The grey
+   page background goes too, so the app sits on the article's own white. */
+html.embedded,
+html.embedded body,
+html.embedded #root {
+  min-height: 0;
+}
+
+html.embedded body {
+  background: transparent;
+}

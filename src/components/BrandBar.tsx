@@ -1,3 +1,5 @@
+import { EMBEDDED } from "../lib/embed";
+
 /**
  * The MTP masthead, carried through the funnel.
  *
@@ -6,6 +8,9 @@
  * whose page this is, it does not compete with the question.
  */
 export function BrandBar({ onHome }: { onHome?: () => void }) {
+  // Inside mtpnoticias.com the site's own header is already above the iframe.
+  if (EMBEDDED) return null;
+
   const mark = (
     <span className="flex items-center gap-3">
       <img src="/mtp-logo.webp" alt="MTP Noticias" className="h-9 w-auto" />
