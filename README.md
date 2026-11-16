@@ -104,5 +104,8 @@ antes de cada despliegue importante.
 
 ## 5. Despliegue
 
-`vercel.json` incluido (Vite, salida en `dist/`). No necesita variables de
-entorno.
+Sin `vercel.json`, a propósito: Vercel detecta Vite y usa por defecto
+`npm run build` y la carpeta `dist/`, que es justo lo que hace falta. La app no
+tiene rutas (es una sola página), así que no necesita reglas de reescritura.
+Una versión anterior llevaba una y Vercel la rechazó como `vercel.json` no
+válido. No necesita variables de entorno.
