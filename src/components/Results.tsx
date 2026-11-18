@@ -4,6 +4,7 @@ import { PERIOD_DESCRIPTIONS } from "../lib/periods";
 import type { Profile } from "../lib/profile";
 import { powerSaving, type Ranked } from "../lib/recommend";
 import { BrandBar } from "./BrandBar";
+import { ContactBox } from "./ContactBox";
 import type { Assumption } from "../lib/expand";
 
 /**
@@ -28,7 +29,6 @@ export function Results({
   onRestart: () => void;
 }) {
   const eligible = ranked.filter((row) => !row.excludedBy);
-  const excluded = ranked.filter((row) => row.excludedBy);
   const power = powerSaving(profile);
 
   /*
@@ -135,28 +135,17 @@ export function Results({
           Tarifas ordenadas por coste anual estimado
         </h2>
         <div className="mt-5 space-y-4">
-          {eligible.map((row, position) => (
+          {eligible.slice(0, 3).map((row, position) => (
             <PlanRow key={row.tariff.id} row={row} rank={position} />
           ))}
         </div>
       </section>
 
-      {excluded.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-            Descartadas según tus preferencias
-          </h2>
-          <p className="mt-2 text-sm text-slate-500">
-            Las mantenemos visibles para que puedas valorar el coste de cada preferencia. Si
-            la modificas, vuelven a incluirse en la comparativa.
-          </p>
-          <div className="mt-5 space-y-4">
-            {excluded.map((row) => (
-              <PlanRow key={row.tariff.id} row={row} rank={-1} />
-            ))}
-          </div>
-        </section>
-      )}
+      <ContactBox
+        context={`Recomendada: ${best.tariff.name} (${best.tariff.retailer}), ${euros(
+          best.cost.total,
+        )}/año · Consumo estimado ${number(profile.annualKwh)} kWh/año`}
+      />
 
       <Assumptions profile={profile} assumed={assumed} />
 
